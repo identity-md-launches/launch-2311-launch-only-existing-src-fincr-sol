@@ -1,0 +1,22 @@
+{
+  "kind": "custom_token",
+  "token": {
+    "contract": "FINCR",
+    "name": "FINANCIER",
+    "symbol": "FINCR",
+    "decimals": 18,
+    "constructorArgs": [
+      "1000000000000000000000000000"
+    ],
+    "totalSupply": "1000000000000000000000000000"
+  },
+  "contracts": [],
+  "pool": {
+    "pairedCurrency": "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
+    "fee": 12500,
+    "tickSpacing": 60,
+    "initialPrice": "79228162514264337593543950336"
+  },
+  "economics": {"poolBps":5000,"initialMarketCapWei":"2500000000000000000000","remainderTo":"0xbcf19c0821a245383c127570615896abac9e424f"},
+  "notes": "Launch only the existing src/FINCR.sol ERC20 with its unchanged source, pinned OpenZeppelin dependencies and single uint256 constructor. The constructor mints exactly 1,000,000,000 FINANCIER (FINCR), with 18 decimals, once to msg.sender, the official factory. Holders may voluntarily burn their own tokens through burn(uint256). Preserve solc 0.8.30, Cancun, optimizer enabled with 200 runs, viaIR=false and bytecode_hash=none. No application contracts, custom hook or initialization calls. The pool pairs with IMD at a 1.25% trading fee and an initial valuation of 2,500 IMD. pool.initialPrice records provenance only; the deployer derives the opening price from economics.initialMarketCapWei and totalSupply. The default trading-fee requester remains the authenticated paying founder wallet."
+}
