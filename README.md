@@ -1,10 +1,34 @@
-# FINANCIER — mining and auction contracts
+# FINANCIER — FINCR token launch
 
 Reviewed source and tests for the FINANCIER Robinhood Chain (4663) mining-auction candidate.
 This repository is a clean source snapshot, with no private development history or website.
 No production token or mining deployment address is endorsed here.
 
-## Current status
+## Current launch: FINCR only
+
+This launch deploys only the existing `src/FINCR.sol:FINCR` through the official
+custom-token factory on Robinhood Chain (4663). The manifest step must use
+`contracts: []`. Mining, gateway, controller, receiver, reserve and fee-router
+contracts are outside this launch; mining and gateway deployment happen independently later.
+No custom hook is requested.
+
+FINCR remains byte-for-byte unchanged: name **FINANCIER**, symbol **FINCR**, 18 decimals,
+and one nonpayable `uint256` constructor argument, exactly
+`1000000000000000000000000000` (1,000,000,000 tokens). The constructor mints the
+entire supply once to its caller, the official factory. Holders retain voluntary
+`burn(uint256)`; there is no subsequent mint or token administration.
+
+The factory distributes 50% to the IMD pool, 10% to the official swarm distributor,
+and the remaining 40% directly to `0xbcf19c0821a245383c127570615896abac9e424f`.
+The opening valuation is 2,500 IMD for the entire supply. The default trading-fee
+requester remains the authenticated paying founder wallet; Operations and
+`FinancierFeeRouter` receive no requester override.
+
+See [ADAPTATION.md](ADAPTATION.md) for the exact launch parameters, bytecode pins,
+audit reproduction and validation. The following mining documentation describes
+the separate candidate and does not add contracts or funding actions to this launch.
+
+## Separate mining candidate status
 
 **Agent payout integration is blocked.** Official Intake purchase/completion is implemented,
 but no authenticated complete agent/work/payout-wallet settlement interface has been
@@ -13,7 +37,7 @@ enable them later, upgrade or migrate its reserve. Unsupported agent allocations
 quarantined. Resolve this limitation before deploying/funding a production reward system.
 No completed independent IMD audit is claimed. Passing tests are not an audit or a guarantee.
 
-## Contract entry point
+## Separate mining candidate entry point
 
 `src/FounderFundedMining.sol` reuses the mining vault and auction implementation. It creates
 `AttestedAgentRounds`, `PermanentV4Market` and `RobinhoodJobController` during construction.
@@ -21,9 +45,10 @@ All inherited contracts, helpers, interfaces and dependencies belong in an audit
 Other reserve receivers and mining variants are preserved for regression coverage; they are
 historical alternatives, not additional components of the founder-funded deployment route.
 
-Approved supply is 1B FINCR: 50% official initial liquidity, 10% official swarm, 40% mining.
-After normal official launch and canonical source/allocation verification, the founder
-transfers exactly 400M FINCR into the verified miner, then calls `arm()` explicitly.
+The mining candidate assumes a 400M FINCR reserve. This launch instead delivers that
+40% remainder directly to the founder. A later, independently authorized mining setup
+would require canonical source/allocation verification, a separate transfer of exactly
+400M FINCR into the verified miner, and an explicit `arm()` call.
 The auction opens at 10 IMD and declines linearly to 0.5 IMD over one hour. The first successful
 bid starts 365-day emissions. Every subsequent takeover resets the opening quote to 10 IMD.
 Mining emissions are 80% financier and 20% equally shared qualifying distinct agents;
@@ -67,5 +92,7 @@ synthetic FINCR exist only in that local fork. It never broadcasts or pays a liv
 availability and runtime/fee drift can prevent a later reproduction; review failures explicitly.
 
 `abi/` contains interfaces generated from the reviewed source. `SNAPSHOT.json` records
-source/test/config hashes and reviewed code pins. No wallet key, signing tool, deployment
+the original snapshot's source/test/config hashes and reviewed code pins; the launch
+documentation and additional token regression tests are recorded in `ADAPTATION.md`.
+No wallet key, signing tool, deployment
 script, payable job or enabled production frontend is included.
